@@ -1,0 +1,10 @@
+INSERT INTO stock (product_id, quantity) VALUES (1, 100);
+INSERT INTO stock (product_id, quantity) VALUES (2, 200);
+INSERT INTO stock (product_id, quantity) VALUES (3, 20);
+INSERT INTO stock (product_id, quantity) VALUES (4, 30);
+INSERT INTO stock (product_id, quantity) VALUES (5, 40);
+INSERT INTO stock (product_id, quantity) VALUES (6, 50);
+INSERT INTO stock (product_id, quantity) VALUES (7, 60);
+INSERT INTO stock (product_id, quantity) VALUES (8, 50);
+INSERT INTO stock (product_id, quantity) VALUES (9, 110);
+INSERT INTO stock (product_id, quantity) VALUES (10, 50);

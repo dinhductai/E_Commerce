@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- =============================================================== -->
+	<!--  1. ĐÂY LÀ PHẦN QUAN TRỌNG NHẤT - KẾ THỪA TỪ SPRING BOOT         -->
+	<!-- =============================================================== -->
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.2.5</version> <!-- Bạn có thể thay đổi phiên bản Spring Boot ở đây -->
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<groupId>com.mscnptpm</groupId>
+	<artifactId>e-commerce</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+
+	<!-- =============================================================== -->
+	<!--  2. ĐÂY LÀ MỘT PARENT POM, NÓ PHẢI CÓ PACKAGING LÀ 'pom'       -->
+	<!-- =============================================================== -->
+	<packaging>pom</packaging>
+
+	<properties>
+		<java.version>21</java.version>
+		<spring-cloud.version>2023.0.0</spring-cloud.version>
+	</properties>
+
+	<!-- =============================================================== -->
+	<!--  3. LIỆT KÊ TẤT CẢ CÁC MODULE CON CỦA DỰ ÁN                   -->
+	<!-- =============================================================== -->
+	<modules>
+		<module>api-gateway</module>
+		<module>catalog-service</module>
+		<module>common-lib</module>
+		<module>config-server</module>
+		<module>discovery-server</module>
+		<module>identity-service</module>
+		<module>inventory-service</module>
+		<module>order-service</module>
+		<module>payment-service</module>
+	</modules>
+
+	<!-- Quản lý phiên bản tập trung cho Spring Cloud -->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<!-- Plugin này sẽ được TẤT CẢ các module con kế thừa -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

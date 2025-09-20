@@ -1,0 +1,152 @@
+services:
+  # 1. Service đăng ký và khám phá
+  discovery-server:
+    build:
+      context: .
+      dockerfile: discovery-server/Dockerfile
+      args:
+        MODULE_PATH: discovery-server
+    container_name: discovery-server
+    ports:
+      - "8761:8761"
+    networks:
+      - e-commerce-network
+
+  # 2. Service quản lý cấu hình
+  config-server:
+    build:
+      context: .
+      dockerfile: config-server/Dockerfile
+      args: # <-- Đã thêm
+        MODULE_PATH: config-server # <-- Đã thêm
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    depends_on:
+      - discovery-server
+    networks:
+      - e-commerce-network
+
+  # 3. Message Broker (RabbitMQ)
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - e-commerce-network
+
+  # 4. Các service nghiệp vụ
+  identity-service:
+    build:
+      context: .
+      dockerfile: identity-service/Dockerfile
+      args: # <-- Đã thêm
+        MODULE_PATH: identity-service # <-- Đã thêm
+    container_name: identity-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - discovery-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    networks:
+      - e-commerce-network
+
+  order-service:
+    build:
+      context: .
+      dockerfile: order-service/Dockerfile
+      args: # <-- Đã thêm
+        MODULE_PATH: order-service # <-- Đã thêm
+    container_name: order-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - discovery-server
+      - rabbitmq
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    networks:
+      - e-commerce-network
+
+  catalog-service:
+    build:
+      context: .
+      dockerfile: catalog-service/Dockerfile
+      args: # <-- Đã thêm
+        MODULE_PATH: catalog-service # <-- Đã thêm
+    container_name: catalog-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - discovery-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    networks:
+      - e-commerce-network
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: payment-service/Dockerfile
+      args: # <-- Đã thêm
+        MODULE_PATH: payment-service # <-- Đã thêm
+    container_name: payment-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - discovery-server
+      - rabbitmq
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    networks:
+      - e-commerce-network
+
+  inventory-service:
+    build:
+      context: .
+      dockerfile: inventory-service/Dockerfile
+      args: # <-- Đã thêm
+        MODULE_PATH: inventory-service # <-- Đã thêm
+    container_name: inventory-service
+    ports:
+      - "8085:8085"
+    depends_on:
+      - discovery-server
+      - rabbitmq
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - SPRING_RABBITMQ_HOST=rabbitmq
+    networks:
+      - e-commerce-network
+
+  # 5. API Gateway - Cổng vào hệ thống
+  api-gateway:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+      args: # <-- Đã thêm
+        MODULE_PATH: api-gateway # <-- Đã thêm
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - identity-service
+      - order-service
+      - catalog-service
+      - payment-service
+      - inventory-service
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    networks:
+      - e-commerce-network
+
+# Định nghĩa mạng chung để các container giao tiếp với nhau qua tên
+networks:
+  e-commerce-network:
+    driver: bridge
+
