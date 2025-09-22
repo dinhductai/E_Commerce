@@ -1,124 +1,112 @@
-# E-Commerce Microservice Project
+E-Commerce Microservice Project
+This project is an e-commerce system built on a microservice architecture.It includes core services such as:
 
-Dự án này là một hệ thống thương mại điện tử được xây dựng dựa trên **kiến trúc microservice**.  
-Nó bao gồm các service cốt lõi như:
+Identity Service  
+Catalog Service  
+Order Service  
+Inventory Service  
+Payment Service
 
-- Quản lý định danh (Identity Service)
-- Quản lý sản phẩm (Catalog Service)
-- Quản lý đơn hàng (Order Service)
-- Quản lý tồn kho (Inventory Service)
-- Thanh toán (Payment Service)
+All services are orchestrated through an API Gateway and use Docker for easy deployment.
 
-Tất cả được điều phối qua **API Gateway** và sử dụng **Docker** để dễ dàng triển khai.
+Getting Started
+Below is a complete guide for setup, running, exploring the system, and making API calls.
 
----
+1. Prerequisites
+Ensure your machine has the following installed:
 
-## Getting Started
+Docker Desktop👉 Download here  
 
-Dưới đây là toàn bộ hướng dẫn từ cài đặt, chạy thử, khám phá hệ thống đến gọi API.
+⚠️ After installation, start Docker Desktop and wait until it runs stably.
 
----
 
-## 1. Yêu cầu cài đặt (Prerequisites)
+Git👉 Download here
 
-Hãy đảm bảo máy tính đã có sẵn:
+(Optional) IntelliJ IDEA & JDK 21 (if you want to explore the source code)👉 Download IntelliJ IDEA Community👉 Download OpenJDK 21
 
-- **Docker Desktop**  
-  👉 [Tải tại đây](https://www.docker.com/products/docker-desktop/)
-  > ⚠️ Sau khi cài đặt, hãy khởi động Docker Desktop và đợi đến khi nó chạy ổn định.
 
-- **Git**  
-  👉 [Tải tại đây](https://git-scm.com/downloads)
 
-- *(Tùy chọn)* **IntelliJ IDEA** & **JDK 21** (nếu muốn nghiên cứu mã nguồn)  
-  👉 [Tải IntelliJ IDEA Community](https://www.jetbrains.com/idea/download/)  
-  👉 [Tải OpenJDK 21](https://jdk.java.net/21/)
+2. Clone the Project
+Open a terminal and run:
+git clone https://gitlab.com/mscnptpm/e-commerce.git
 
----
 
-## 2. Tải mã nguồn (Clone Project)
+3. Build and Run with Docker
+Run the following command to build and start the entire system:
+docker-compose up --build -d
 
-Mở terminal và chạy:
-```bash
-    git clone https://gitlab.com/mscnptpm/e-commerce.git
-```
----
-## 3. Build chương trình với docker 
-Chạy lệnh để build và khởi chạy toàn bộ hệ thống:
 
-```bash
-    docker-compose up --build -d
-```
-- --build: buộc Docker build lại các image (lần đầu sẽ hơi lâu ⏳).
+--build: Forces Docker to rebuild images (the first run may take a while ⏳).  
 
-- -d: chạy ở chế độ background (detached mode).
+-d: Runs in background (detached mode).  
 
-- Lần chạy đầu tiên Docker sẽ tải Java, Maven, RabbitMQ và biên dịch mã nguồn. Các lần sau sẽ nhanh hơn nhiều.
+On the first run, Docker will download Java, Maven, RabbitMQ, and compile the source code. Subsequent runs will be much faster.
 
----
-## 4. Kiểm tra và Khám phá (Exploring the System)
 
-- Sau khi khởi động thành công, bạn có thể truy cập vào các công cụ sau:
 
-### 4.1. Eureka Dashboard (Quản lý các service)
-👉 http://localhost:8761
+4. Exploring the System
+After successful startup, you can access the following tools:
+4.1. Eureka Dashboard (Service Management)
+👉 http://localhost:8761  
 
-- Tại đây bạn sẽ thấy tất cả các microservice đã đăng ký và đang chạy.
+Here, you can view all registered and running microservices.
 
-### 4.2. RabbitMQ Dashboard (Hệ thống hàng đợi tin nhắn)
-👉 http://localhost:15672
+4.2. RabbitMQ Dashboard (Message Queue System)
+👉 http://localhost:15672  
 
-- Đăng nhập bằng:
+Login credentials:  
+Username: guest  
+Password: guest
 
-- Username: guest
 
-- Password: guest
 
-### 4.3. Swagger UI (Cổng API chính)
+4.3. Swagger UI (Main API Gateway)
+👉 http://localhost:8080/swagger-ui.html  
 
-👉 http://localhost:8080/swagger-ui.html
+This is where you can view all APIs and test them.
 
-- Đây là nơi bạn có thể xem toàn bộ API và thực hành gọi thử.
 
----
-## 5. Thực hành gọi API
-### 5.1. Đăng nhập để lấy Token
-- Để gọi được các API bảo vệ, bạn cần lấy access token.
+5. Making API Calls
+5.1. Login to Obtain a Token
 
-- **Endpoint:**
-       
-  - POST http://localhost:8080/identity-service/auth/login
-    
-  - Body (JSON):
-    ```bash
-        {
-        "username": "testuser",
-        "password": "password123"
-        }
-    ```
-- Kết quả trả về sẽ có accessToken.
-- 👉 Hãy sao chép token này.
-- Nếu chưa có tài khoản, bạn có thể dùng endpoint /register để tạo.
+To call protected APIs, you need an access token.
 
-### 5.2. Gọi API được bảo vệ
+Endpoint:  
 
-- Ví dụ: GET /catalog-service/api/products
+POST http://localhost:8080/identity-service/auth/login
 
-  - Trên Swagger UI hoặc Postman:
 
-  - Nhấn Authorize hoặc mở tab Authorization
+Body (JSON):
+{
+  "username": "testuser",
+  "password": "password123"
+}
 
-  - Type: Bearer Token
 
-  - Token: Dán token vừa nhận được
+The response will include an accessToken.  
 
-🎉 Bây giờ bạn đã có thể gọi API và nhận kết quả thành công.
+👉 Copy this token.  
 
----
-## 6. Dừng hệ thống (Shutdown)
+If you don’t have an account, use the /register endpoint to create one.
 
-- Khi muốn dừng toàn bộ chương trình:
-    ```bash
-    docker-compose down
-    ```
-- Lệnh này sẽ dừng và xóa tất cả container, giải phóng môi trường.
+
+5.2. Calling Protected APIs
+
+Example: GET /catalog-service/api/products  
+
+On Swagger UI or Postman:  
+
+Click Authorize or open the Authorization tab.  
+Type: Bearer Token  
+Token: Paste the token you received.
+
+
+
+🎉 You can now call the API and receive successful responses.
+
+6. Shutting Down the System
+To stop the entire system:
+docker-compose down
+
+
+This command stops and removes all containers, freeing up the environment.
